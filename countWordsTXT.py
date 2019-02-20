@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 from collections import Counter
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 import requests
-import string
+#import string
 
 url = input('Insert Link (The Jakarta Post) : ')
 
@@ -10,7 +11,7 @@ r = requests.get(url, timeout=5)
 
 soup = BeautifulSoup(r.content, "lxml")
 
-all_text = []
+line_text = []
 
 title = soup.find('h1', {'class' : 'title-large'}).text
 
@@ -36,25 +37,30 @@ for article in cat:
     for n in article.descendants:
         if n.name == 'p':
             paragraphs = n.text
-            all_text.append(paragraphs)
+            line_text.append(paragraphs)
 
-# joining all_text strings
-            
-one_text = ' '.join(all_text)
+# joining line_text strings
 
-# removing punctuation from one_text
+one_text = ' '.join(line_text)
 
-rem_punc = str.maketrans('', '', string.punctuation)
-one_rem = one_text.translate(rem_punc)
+# convert to lowercase
 
-# split words in one_rem
+low_text = one_text.lower()
 
-split_one = one_rem.split()
+# split into tokens
+
+tokens = word_tokenize(low_text)
+
+# removing punctuation from tokens
+
+words = [word for word in tokens if word.isalpha()]
+
+# removing stopwords
+
+stopwrd_set = set(stopwords.words('english'))
+
+cleaned_words = [w for w in words if not w in stopwrd_set] 
 
 # count words
 
-hitung = Counter(split_one)
-
-## coba tokenize
-
-tokens = word_tokenize(one_text)
+count_words = Counter(cleaned_words)
