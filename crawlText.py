@@ -7,7 +7,7 @@ this file contains functions that will be used for crawling the text :
 from bs4 import BeautifulSoup
 import requests
 
-def BSobj(url):
+def bsObj(url):
 
     r = requests.get(url, timeout=5)
     soup = BeautifulSoup(r.content, "lxml")
